@@ -1,0 +1,147 @@
+object FrmPrincipal: TFrmPrincipal
+  Left = 378
+  Height = 573
+  Top = 112
+  Width = 511
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'D1Backup'
+  ClientHeight = 573
+  ClientWidth = 511
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.2.6.0'
+  object Dom: TCheckBox
+    Left = 16
+    Height = 19
+    Top = 16
+    Width = 70
+    Caption = 'Domingo'
+    TabOrder = 0
+  end
+  object Seg: TCheckBox
+    Left = 104
+    Height = 19
+    Top = 16
+    Width = 66
+    Caption = 'Segunda'
+    TabOrder = 1
+  end
+  object Ter: TCheckBox
+    Left = 192
+    Height = 19
+    Top = 16
+    Width = 48
+    Caption = 'Terça'
+    TabOrder = 2
+  end
+  object Qua: TCheckBox
+    Left = 248
+    Height = 19
+    Top = 16
+    Width = 56
+    Caption = 'Quarta'
+    TabOrder = 3
+  end
+  object Qui: TCheckBox
+    Left = 312
+    Height = 19
+    Top = 16
+    Width = 56
+    Caption = 'Quinta'
+    TabOrder = 4
+  end
+  object Sex: TCheckBox
+    Left = 376
+    Height = 19
+    Top = 16
+    Width = 48
+    Caption = 'Sexta'
+    TabOrder = 5
+  end
+  object Sab: TCheckBox
+    Left = 432
+    Height = 19
+    Top = 16
+    Width = 59
+    Caption = 'Sabado'
+    TabOrder = 6
+  end
+  object edtHora: TLabeledEdit
+    Left = 16
+    Height = 23
+    Top = 64
+    Width = 80
+    Alignment = taCenter
+    EditLabel.Height = 15
+    EditLabel.Width = 80
+    EditLabel.Caption = 'Hora'
+    EditLabel.ParentColor = False
+    TabOrder = 7
+    Text = '22:00'
+  end
+  object BtnIniciar: TButton
+    Left = 128
+    Height = 25
+    Top = 62
+    Width = 75
+    Caption = 'Iniciar'
+    OnClick = BtnIniciarClick
+    TabOrder = 8
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Height = 361
+    Top = 152
+    Width = 497
+    Caption = 'Log'
+    ClientHeight = 341
+    ClientWidth = 493
+    TabOrder = 9
+    object memoLog: TMemo
+      Left = 0
+      Height = 341
+      Top = 0
+      Width = 493
+      Align = alClient
+      ReadOnly = True
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+    end
+  end
+  object BtnIniciar1: TButton
+    Left = 360
+    Height = 57
+    Top = 50
+    Width = 131
+    Caption = 'Entrar no GDrive'
+    OnClick = BtnIniciar1Click
+    TabOrder = 10
+  end
+  object ProgressBar1: TProgressBar
+    Left = 8
+    Height = 48
+    Top = 520
+    Width = 497
+    TabOrder = 11
+  end
+  object edtIdFolder: TLabeledEdit
+    Left = 16
+    Height = 23
+    Top = 120
+    Width = 288
+    Alignment = taCenter
+    EditLabel.Height = 15
+    EditLabel.Width = 288
+    EditLabel.Caption = 'ID da pasta'
+    EditLabel.ParentColor = False
+    TabOrder = 12
+  end
+  object TimerProcess: TTimer
+    Enabled = False
+    Interval = 60000
+    OnTimer = TimerProcessTimer
+    Left = 272
+    Top = 56
+  end
+end
