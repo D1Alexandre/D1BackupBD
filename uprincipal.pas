@@ -45,7 +45,7 @@ TFrmPrincipal = class(TForm)
 var
   FrmPrincipal: TFrmPrincipal;
   JDrive: Tgoogledrive;
-  client_id: string = '164139322725-4dbm962sta2um6cp851tnag4s75rphjm.apps.googleusercontent.com';
+  client_id: string = '164139322725-4dbm962sta2um6cp851tnag4s75rphjm.apps.googleusercontent.com'; //Alterar para a suas chaves, essas aqui só servem para minha pessoa.
   client_secret: string = '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';
 
 implementation
