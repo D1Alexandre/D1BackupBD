@@ -59,6 +59,7 @@ var
    vCount: Integer;
    CanStart: Boolean;
 begin
+  //TimerProcess.Enabled := true;
   vCount   := 0;
   CanStart := false;
   if edtHora.Text = '' then
@@ -141,7 +142,7 @@ var
    Ambiente: TiniFile;
    Sections, Lines: TStringList;
    i: Integer;
-   NomeBanco, NomeBackup, Versao, LocalBackup: String;
+   NomeBanco, NomeBackup, Versao, LocalBackup, hora: String;
 
    aProcess: TProcess;
    MemStream: TMemoryStream;
@@ -149,62 +150,67 @@ var
    BytesRead: LongInt;
 
 begin
-  TimerProcess.Enabled := false;
-  Sections := TStringList.Create;
-  Ambiente := TIniFile.Create('AMBIENTE.ini');
-  Ambiente.ReadSections(Sections);
-  for i := 0 to Sections.Count - 1 do
+  memoLog.Lines.Add(' Verficando ciclo de backup '+DateTimeToStr(Now));
+  hora := FormatDateTime('HH:mm', now);
+  if hora = edtHora.Text then
   begin
-    NomeBanco := Ambiente.ReadString(Sections[i], 'BANCO', '');
-    Versao    := Ambiente.ReadString(Sections[i], 'VERSAO', '2.5');
-    if NomeBanco <> '' then
+    TimerProcess.Enabled := false;
+    Sections := TStringList.Create;
+    Ambiente := TIniFile.Create('AMBIENTE.ini');
+    Ambiente.ReadSections(Sections);
+    for i := 0 to Sections.Count - 1 do
     begin
-      MemStream := TMemoryStream.Create;
-      Lines     := TStringList.Create;
-      BytesRead := 0;
-      NomeBackup  := StringReplace(ExtractFileName(NomeBanco), '.FDB' ,'.FBK', [rfReplaceAll, rfIgnoreCase]);
-      LocalBackup := ExtractFilePath(NomeBanco)+PathDelim+'Backups'+PathDelim+NomeBackup;
-      aProcess   := TProcess.Create(nil);
-      if Versao = '2.5' then
+      NomeBanco := Ambiente.ReadString(Sections[i], 'BANCO', '');
+      Versao    := Ambiente.ReadString(Sections[i], 'VERSAO', '2.5');
+      if NomeBanco <> '' then
       begin
-         aProcess.Executable := 'C:\Program Files (x86)\Firebird\Firebird_2_5\bin\gbak.exe';
-      end Else
-      begin
-        aProcess.Executable := 'C:\Program Files (x86)\Firebird\Firebird_3_0\gbak.exe';
-      end;
-      aProcess.Parameters.Add('-backup');
-      aProcess.Parameters.Add('-user');
-      aProcess.Parameters.Add( Ambiente.ReadString(Sections[i], 'USUARIO', 'SYSDBA') );
-      aProcess.PArameters.Add('-password');
-      aProcess.Parameters.Add( Ambiente.ReadString(Sections[i], 'SENHA', 'masterkey') );
-      aProcess.Parameters.Add('-v');
-      aProcess.Parameters.Add(NomeBanco);
-      aProcess.Parameters.Add(LocalBackup);
-      aprocess.ShowWindow := swoHIDE;
-      AProcess.Options := AProcess.Options + [poUsePipes,poStderrToOutPut];
-      memoLog.lines.Add('Backup in progress ... '+NomeBanco+' '+DateTimeToStr(Now));
-      aProcess.Execute;
-      while aProcess.Running do
-      begin
-         MemStream.SetSize(BytesRead + READ_BYTES);
-         // try reading it
-         NumBytes := aProcess.Output.Read((MemStream.Memory + BytesRead)^, READ_BYTES);
-         if NumBytes > 0
-            then Inc(BytesRead, NumBytes)
-         else
-            BREAK
-      end;
-      MemStream.SetSize(BytesRead);
-      Lines.LoadFromStream(MemStream);
-      memoLog.lines.AddStrings(Lines);
-      memoLog.lines.Add('Backup terminated '+DateTimeToStr(Now));
+        MemStream := TMemoryStream.Create;
+        Lines     := TStringList.Create;
+        BytesRead := 0;
+        NomeBackup  := StringReplace(ExtractFileName(NomeBanco), '.FDB' ,'.FBK', [rfReplaceAll, rfIgnoreCase]);
+        LocalBackup := ExtractFilePath(NomeBanco)+PathDelim+'Backups'+PathDelim+NomeBackup;
+        aProcess   := TProcess.Create(nil);
+        if Versao = '2.5' then
+        begin
+           aProcess.Executable := 'C:\Program Files (x86)\Firebird\Firebird_2_5\bin\gbak.exe';
+        end Else
+        begin
+          aProcess.Executable := 'C:\Program Files (x86)\Firebird\Firebird_3_0\gbak.exe';
+        end;
+        aProcess.Parameters.Add('-backup');
+        aProcess.Parameters.Add('-user');
+        aProcess.Parameters.Add( Ambiente.ReadString(Sections[i], 'USUARIO', 'SYSDBA') );
+        aProcess.PArameters.Add('-password');
+        aProcess.Parameters.Add( Ambiente.ReadString(Sections[i], 'SENHA', 'masterkey') );
+        aProcess.Parameters.Add('-v');
+        aProcess.Parameters.Add(NomeBanco);
+        aProcess.Parameters.Add(LocalBackup);
+        aprocess.ShowWindow := swoHIDE;
+        AProcess.Options := AProcess.Options + [poUsePipes,poStderrToOutPut];
+        memoLog.lines.Add('Backup in progress ... '+NomeBanco+' '+DateTimeToStr(Now));
+        aProcess.Execute;
+        while aProcess.Running do
+        begin
+           MemStream.SetSize(BytesRead + READ_BYTES);
+           // try reading it
+           NumBytes := aProcess.Output.Read((MemStream.Memory + BytesRead)^, READ_BYTES);
+           if NumBytes > 0
+              then Inc(BytesRead, NumBytes)
+           else
+              BREAK
+        end;
+        MemStream.SetSize(BytesRead);
+        Lines.LoadFromStream(MemStream);
+        memoLog.lines.AddStrings(Lines);
+        memoLog.lines.Add('Backup terminated '+DateTimeToStr(Now));
 
-      aProcess.Free;
-      Lines.Free;
-      MemStream.Free;
-      //Enviando para GDrive
-      SendFileGdrive(LocalBackup);
-      TimerProcess.Enabled := True;
+        aProcess.Free;
+        Lines.Free;
+        MemStream.Free;
+        //Enviando para GDrive
+        SendFileGdrive(LocalBackup);
+        TimerProcess.Enabled := True;
+      end;
     end;
   end;
 end;
